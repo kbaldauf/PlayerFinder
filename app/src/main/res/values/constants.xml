@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stattleship_base_api">https://www.stattleship.com/</string>
+    <string name="stattleship_authorization_key">Authorization</string>
+    <string name="stattleship_token_key">Token token=%s</string>
+    <string name="stattleship_content_key">Content-Type</string>
+    <string name="stattleship_content_value">application/json</string>
+    <string name="stattleship_accept_key">Accept</string>
+    <string name="stattleship_accept_value">application/vnd.stattleship.com; version=1</string>
+</resources>
