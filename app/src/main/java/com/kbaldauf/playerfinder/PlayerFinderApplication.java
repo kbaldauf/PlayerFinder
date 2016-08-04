@@ -10,6 +10,8 @@ import com.kbaldauf.playerfinder.component.DaggerNetworkComponent;
 import com.kbaldauf.playerfinder.component.NetworkComponent;
 import com.kbaldauf.playerfinder.module.ApplicationModule;
 
+import timber.log.Timber;
+
 public class PlayerFinderApplication extends Application {
 
     private ApplicationComponent applicationComponent;
@@ -18,6 +20,9 @@ public class PlayerFinderApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
         applicationComponent = DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
         networkComponent = DaggerNetworkComponent.builder().applicationComponent(applicationComponent).build();
     }

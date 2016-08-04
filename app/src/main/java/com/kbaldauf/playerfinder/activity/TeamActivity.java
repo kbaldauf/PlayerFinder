@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.kbaldauf.playerfinder.PlayerFinderApplication;
 import com.kbaldauf.playerfinder.R;
@@ -20,14 +19,13 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class TeamActivity extends Activity {
 
-    @BindView(R.id.team_list)
-    RecyclerView teamList;
+    @BindView(R.id.team_list) RecyclerView teamList;
 
-    @Inject
-    StattleshipClient client;
+    @Inject StattleshipClient client;
 
     private Subscription subscription;
     private TeamAdapter teamAdapter;
@@ -51,22 +49,22 @@ public class TeamActivity extends Activity {
         subscription = call.observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Hockey>() {
             @Override
             public void onCompleted() {
-                Log.d("Hockey Observable", "onCompleted");
+                Timber.d("onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.d("Hockey Observable", "onError", e);
+                Timber.e(e, "onError");
             }
 
             @Override
             public void onNext(Hockey hockey) {
-                Log.d("Hockey Observable", "onNext");
+                Timber.d("onNext");
                 teamAdapter.setData(hockey.getTeams());
 
             }
         });
-        Log.d("MainActivity", "onResume");
+        Timber.d("onResume");
     }
 
     @Override

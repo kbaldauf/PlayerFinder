@@ -2,7 +2,8 @@ package com.kbaldauf.playerfinder.adapter;
 
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.kbaldauf.playerfinder.R;
 import com.kbaldauf.playerfinder.model.Team;
+import com.kbaldauf.playerfinder.util.ModelUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +50,13 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamViewHolder
     @Override
     public void onBindViewHolder(TeamViewHolder holder, int position) {
         Team team = teams.get(position);
-        holder.name.setText(String.format("%s  %s", team.getName(), team.getNickname()));
-        holder.logo.setBackgroundColor(Color.parseColor("#" + team.getColor()));
+        holder.name.setText(ModelUtil.getBuiltTeamName(team));
+        if (team.getColors().size() > 1) {
+            Drawable gradient = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, ModelUtil.getParsedColorList(team.getColors()));
+            holder.logo.setBackground(gradient);
+        } else {
+            holder.logo.setBackgroundColor(ModelUtil.getParsedColor(team.getColor()));
+        }
     }
 
     class TeamViewHolder extends RecyclerView.ViewHolder {
