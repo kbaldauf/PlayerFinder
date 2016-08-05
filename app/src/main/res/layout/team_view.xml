@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/team_view_container"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/logo"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/color_palette"
+        android:layout_width="@dimen/default_image_size"
+        android:layout_height="@dimen/default_image_size"
+        app:layout_constraintLeft_toLeftOf="@id/team_view_container" />
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
-        android:layout_toEndOf="@id/logo"/>
-</RelativeLayout>
+        android:layout_marginStart="@dimen/default_text_margin"
+        app:layout_constraintCenterY_toCenterY="@id/team_view_container"
+        app:layout_constraintStart_toEndOf="@id/color_palette" />
+
+    <RadioButton
+        android:id="@+id/radio_button"
+        android:layout_width="@dimen/default_radio_button_size"
+        android:layout_height="@dimen/default_radio_button_size"
+        android:layout_marginEnd="@dimen/default_horizontal_margin"
+        app:layout_constraintCenterY_toCenterY="@id/team_view_container"
+        app:layout_constraintRight_toRightOf="@id/team_view_container" />
+</android.support.constraint.ConstraintLayout>

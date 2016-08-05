@@ -1,6 +1,7 @@
 package com.kbaldauf.playerfinder.activity;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import com.kbaldauf.playerfinder.adapter.TeamAdapter;
 import com.kbaldauf.playerfinder.model.Hockey;
 import com.kbaldauf.playerfinder.model.Team;
 import com.kbaldauf.playerfinder.network.StattleshipClient;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.List;
 
@@ -42,6 +44,7 @@ public class TeamActivity extends Activity {
         PlayerFinderApplication.from(this).getNetworkComponent().inject(this);
         teamAdapter = new TeamAdapter(this);
         teamList.setLayoutManager(new LinearLayoutManager(this));
+        teamList.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.BLACK).build());
         teamList.setAdapter(teamAdapter);
     }
 
