@@ -1,10 +1,10 @@
 
 package com.kbaldauf.playerfinder.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -12,7 +12,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Team {
 
     private String id;
+    @SerializedName("created_at")
     private String createdAt;
+    @SerializedName("updated_at")
     private String updatedAt;
     private String color;
     private List<String> colors = new ArrayList<String>();
@@ -24,10 +26,10 @@ public class Team {
     private double latitude;
     private double longitude;
     private String slug;
+    @SerializedName("division_id")
     private String divisionId;
+    @SerializedName("league_id")
     private String leagueId;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
     /**
      * 
      * @return
@@ -303,17 +305,9 @@ public class Team {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(createdAt).append(updatedAt).append(color).append(colors).append(hashtag).append(hashtags).append(location).append(name).append(nickname).append(latitude).append(longitude).append(slug).append(divisionId).append(leagueId).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(id).append(createdAt).append(updatedAt).append(color).append(colors).append(hashtag).append(hashtags).append(location).append(name).append(nickname).append(latitude).append(longitude).append(slug).append(divisionId).append(leagueId).toHashCode();
     }
 
     @Override
@@ -321,11 +315,11 @@ public class Team {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Team) == false) {
+        if (!(other instanceof Team)) {
             return false;
         }
         Team rhs = ((Team) other);
-        return new EqualsBuilder().append(id, rhs.id).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(color, rhs.color).append(colors, rhs.colors).append(hashtag, rhs.hashtag).append(hashtags, rhs.hashtags).append(location, rhs.location).append(name, rhs.name).append(nickname, rhs.nickname).append(latitude, rhs.latitude).append(longitude, rhs.longitude).append(slug, rhs.slug).append(divisionId, rhs.divisionId).append(leagueId, rhs.leagueId).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(color, rhs.color).append(colors, rhs.colors).append(hashtag, rhs.hashtag).append(hashtags, rhs.hashtags).append(location, rhs.location).append(name, rhs.name).append(nickname, rhs.nickname).append(latitude, rhs.latitude).append(longitude, rhs.longitude).append(slug, rhs.slug).append(divisionId, rhs.divisionId).append(leagueId, rhs.leagueId).isEquals();
     }
 
 }

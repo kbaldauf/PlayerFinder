@@ -1,8 +1,8 @@
 
 package com.kbaldauf.playerfinder.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.SerializedName;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -10,11 +10,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Conference {
 
     private String id;
+    @SerializedName("created_at")
     private String createdAt;
+    @SerializedName("updated_at")
     private String updatedAt;
     private String name;
+    @SerializedName("league_id")
     private String leagueId;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      * 
@@ -111,17 +113,9 @@ public class Conference {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(createdAt).append(updatedAt).append(name).append(leagueId).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(id).append(createdAt).append(updatedAt).append(name).append(leagueId).toHashCode();
     }
 
     @Override
@@ -129,11 +123,11 @@ public class Conference {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Conference) == false) {
+        if (!(other instanceof Conference)) {
             return false;
         }
         Conference rhs = ((Conference) other);
-        return new EqualsBuilder().append(id, rhs.id).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(name, rhs.name).append(leagueId, rhs.leagueId).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(name, rhs.name).append(leagueId, rhs.leagueId).isEquals();
     }
 
 }

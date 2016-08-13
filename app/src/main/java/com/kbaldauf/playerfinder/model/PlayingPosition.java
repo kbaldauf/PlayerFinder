@@ -2,12 +2,12 @@
 package com.kbaldauf.playerfinder.model;
 
 import com.google.gson.annotations.SerializedName;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class League {
+public class PlayingPosition {
+
 
     private String id;
     @SerializedName("created_at")
@@ -15,16 +15,14 @@ public class League {
     @SerializedName("updated_at")
     private String updatedAt;
     private String abbreviation;
-    private Object color;
-    @SerializedName("minutes_per_period")
-    private Object minutesPerPeriod;
+    private Object description;
+    private String formation;
     private String name;
-    private Object periods;
-    private String slug;
-    private String sport;
+    @SerializedName("league_id")
+    private String leagueId;
 
     /**
-     * 
+     *
      * @return
      *     The id
      */
@@ -33,7 +31,7 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @param id
      *     The id
      */
@@ -42,7 +40,7 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @return
      *     The createdAt
      */
@@ -51,7 +49,7 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @param createdAt
      *     The created_at
      */
@@ -60,7 +58,7 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @return
      *     The updatedAt
      */
@@ -69,7 +67,7 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @param updatedAt
      *     The updated_at
      */
@@ -78,7 +76,7 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @return
      *     The abbreviation
      */
@@ -87,7 +85,7 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @param abbreviation
      *     The abbreviation
      */
@@ -96,43 +94,43 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @return
-     *     The color
+     *     The description
      */
-    public Object getColor() {
-        return color;
+    public Object getDescription() {
+        return description;
     }
 
     /**
-     * 
-     * @param color
-     *     The color
+     *
+     * @param description
+     *     The description
      */
-    public void setColor(Object color) {
-        this.color = color;
+    public void setDescription(Object description) {
+        this.description = description;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The minutesPerPeriod
+     *     The formation
      */
-    public Object getMinutesPerPeriod() {
-        return minutesPerPeriod;
+    public String getFormation() {
+        return formation;
     }
 
     /**
-     * 
-     * @param minutesPerPeriod
-     *     The minutes_per_period
+     *
+     * @param formation
+     *     The formation
      */
-    public void setMinutesPerPeriod(Object minutesPerPeriod) {
-        this.minutesPerPeriod = minutesPerPeriod;
+    public void setFormation(String formation) {
+        this.formation = formation;
     }
 
     /**
-     * 
+     *
      * @return
      *     The name
      */
@@ -141,7 +139,7 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @param name
      *     The name
      */
@@ -150,57 +148,21 @@ public class League {
     }
 
     /**
-     * 
+     *
      * @return
-     *     The periods
+     *     The leagueId
      */
-    public Object getPeriods() {
-        return periods;
+    public String getLeagueId() {
+        return leagueId;
     }
 
     /**
-     * 
-     * @param periods
-     *     The periods
+     *
+     * @param leagueId
+     *     The league_id
      */
-    public void setPeriods(Object periods) {
-        this.periods = periods;
-    }
-
-    /**
-     * 
-     * @return
-     *     The slug
-     */
-    public String getSlug() {
-        return slug;
-    }
-
-    /**
-     * 
-     * @param slug
-     *     The slug
-     */
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    /**
-     * 
-     * @return
-     *     The sport
-     */
-    public String getSport() {
-        return sport;
-    }
-
-    /**
-     * 
-     * @param sport
-     *     The sport
-     */
-    public void setSport(String sport) {
-        this.sport = sport;
+    public void setLeagueId(String leagueId) {
+        this.leagueId = leagueId;
     }
 
     @Override
@@ -210,7 +172,7 @@ public class League {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(createdAt).append(updatedAt).append(abbreviation).append(color).append(minutesPerPeriod).append(name).append(periods).append(slug).append(sport).toHashCode();
+        return new HashCodeBuilder().append(id).append(createdAt).append(updatedAt).append(abbreviation).append(description).append(formation).append(name).append(leagueId).toHashCode();
     }
 
     @Override
@@ -218,11 +180,11 @@ public class League {
         if (other == this) {
             return true;
         }
-        if (!(other instanceof League)) {
+        if ((other instanceof PlayingPosition) == false) {
             return false;
         }
-        League rhs = ((League) other);
-        return new EqualsBuilder().append(id, rhs.id).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(abbreviation, rhs.abbreviation).append(color, rhs.color).append(minutesPerPeriod, rhs.minutesPerPeriod).append(name, rhs.name).append(periods, rhs.periods).append(slug, rhs.slug).append(sport, rhs.sport).isEquals();
+        PlayingPosition rhs = ((PlayingPosition) other);
+        return new EqualsBuilder().append(id, rhs.id).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(abbreviation, rhs.abbreviation).append(description, rhs.description).append(formation, rhs.formation).append(name, rhs.name).append(leagueId, rhs.leagueId).isEquals();
     }
 
 }

@@ -7,7 +7,6 @@ import com.kbaldauf.playerfinder.network.StattleshipRequestInterceptor;
 
 import javax.inject.Singleton;
 
-import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;

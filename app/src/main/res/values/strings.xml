@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Player Finder</string>
+    <string name="player_not_found">No player found with uniform number %s</string>
+    <string name="submit">Submit</string>
+    <string name="done">Done</string>
 </resources>
