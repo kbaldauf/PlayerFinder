@@ -18,9 +18,18 @@
         android:id="@+id/team_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/activity_team_container"
         app:layout_constraintLeft_toLeftOf="@id/activity_team_container"
         app:layout_constraintRight_toRightOf="@id/activity_team_container"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <include
+        android:id="@+id/loading_spinner"
+        layout="@layout/loading_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintCenterX_toCenterX="@id/activity_team_container"
+        app:layout_constraintCenterY_toCenterY="@id/activity_team_container" />
 
 </android.support.constraint.ConstraintLayout>

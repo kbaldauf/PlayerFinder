@@ -3,8 +3,11 @@ package com.kbaldauf.playerfinder.activity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kbaldauf.playerfinder.PlayerFinderApplication;
@@ -44,6 +47,10 @@ public class RosterActivity extends BaseActivity {
     Button submitButton;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.loading_spinner)
+    ProgressBar loadingSpinner;
+    @BindView(R.id.roster_view_container)
+    ViewGroup rosterViewContainer;
 
     @BindString(R.string.player_not_found)
     String playerNotFound;
@@ -102,12 +109,13 @@ public class RosterActivity extends BaseActivity {
     protected void setupToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(teamSlug);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void loadData() {
         if (dataManager.hasRoster(teamSlug)) {
             Timber.d("Roster already exists in DataManager");
-            enableSubmitButton(dataManager.getRoster(teamSlug).getPlayers());
+            hideLoadingSpinner(dataManager.getRoster(teamSlug).getPlayers());
         } else {
             Observable<Roster> call = client.getHockeyApi().roster(teamSlug);
             subscription = call
@@ -139,14 +147,15 @@ public class RosterActivity extends BaseActivity {
                         @Override
                         public void onNext(List<Player> players) {
                             Timber.d("onNext");
-                            enableSubmitButton(players);
+                            hideLoadingSpinner(players);
                         }
                     });
         }
     }
 
-    private void enableSubmitButton(List<Player> players) {
+    private void hideLoadingSpinner(List<Player> players) {
         roster = players;
-        submitButton.setEnabled(true);
+        loadingSpinner.setVisibility(View.GONE);
+        rosterViewContainer.setVisibility(View.VISIBLE);
     }
 }

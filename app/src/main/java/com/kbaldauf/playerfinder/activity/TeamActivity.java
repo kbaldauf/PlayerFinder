@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.kbaldauf.playerfinder.PlayerFinderApplication;
 import com.kbaldauf.playerfinder.R;
@@ -38,6 +40,8 @@ public class TeamActivity extends BaseActivity {
     RecyclerView teamList;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.loading_spinner)
+    ProgressBar loadingSpinner;
 
     @Inject
     StattleshipClient client;
@@ -112,7 +116,7 @@ public class TeamActivity extends BaseActivity {
     private void loadData() {
         if (dataManager.hasSportsData()) {
             Timber.d("List of teams already exists in DataManager");
-            teamAdapter.setData(dataManager.getSportsData().getTeams());
+            hideSpinner(dataManager.getSportsData().getTeams());
         } else {
             Observable<Sport> call = client.getHockeyApi().teams();
             subscription = call
@@ -146,9 +150,15 @@ public class TeamActivity extends BaseActivity {
                         @Override
                         public void onNext(List<Team> teams) {
                             Timber.d("onNext");
-                            teamAdapter.setData(teams);
+                            hideSpinner(teams);
                         }
                     });
         }
+    }
+
+    private void hideSpinner(List<Team> teams) {
+        teamAdapter.setData(teams);
+        loadingSpinner.setVisibility(View.GONE);
+        teamList.setVisibility(View.VISIBLE);
     }
 }
