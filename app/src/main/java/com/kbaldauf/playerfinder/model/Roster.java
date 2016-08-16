@@ -6,146 +6,41 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Roster {
 
-    private String id;
-    @SerializedName("created_at")
-    private String createdAt;
-    @SerializedName("updated_at")
-    private String updatedAt;
-    @SerializedName("last_game_started_at")
-    private Object lastGameStartedAt;
-    @SerializedName("player_id")
-    private String playerId;
-    @SerializedName("team_id")
-    private String teamId;
-    @SerializedName("season_id")
-    private String seasonId;
+    private List<Player> players = new ArrayList<Player>();
+    @SerializedName("playing_positions")
+    private List<PlayingPosition> playingPositions = new ArrayList<PlayingPosition>();
+    private List<Season> seasons = new ArrayList<Season>();
 
     /**
      *
      * @return
-     *     The id
+     *     The playingPositions
      */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     *
-     * @param id
-     *     The id
-     */
-    public void setId(String id) {
-        this.id = id;
+    public List<PlayingPosition> getPlayingPositions() {
+        return playingPositions;
     }
 
     /**
      *
      * @return
-     *     The createdAt
+     *     The seasons
      */
-    public String getCreatedAt() {
-        return createdAt;
-    }
-
-    /**
-     *
-     * @param createdAt
-     *     The created_at
-     */
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public List<Season> getSeasons() {
+        return seasons;
     }
 
     /**
      *
      * @return
-     *     The updatedAt
+     *     The players
      */
-    public String getUpdatedAt() {
-        return updatedAt;
-    }
-
-    /**
-     *
-     * @param updatedAt
-     *     The updated_at
-     */
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    /**
-     *
-     * @return
-     *     The lastGameStartedAt
-     */
-    public Object getLastGameStartedAt() {
-        return lastGameStartedAt;
-    }
-
-    /**
-     *
-     * @param lastGameStartedAt
-     *     The last_game_started_at
-     */
-    public void setLastGameStartedAt(Object lastGameStartedAt) {
-        this.lastGameStartedAt = lastGameStartedAt;
-    }
-
-    /**
-     *
-     * @return
-     *     The playerId
-     */
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    /**
-     *
-     * @param playerId
-     *     The player_id
-     */
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
-
-    /**
-     *
-     * @return
-     *     The teamId
-     */
-    public String getTeamId() {
-        return teamId;
-    }
-
-    /**
-     *
-     * @param teamId
-     *     The team_id
-     */
-    public void setTeamId(String teamId) {
-        this.teamId = teamId;
-    }
-
-    /**
-     *
-     * @return
-     *     The seasonId
-     */
-    public String getSeasonId() {
-        return seasonId;
-    }
-
-    /**
-     *
-     * @param seasonId
-     *     The season_id
-     */
-    public void setSeasonId(String seasonId) {
-        this.seasonId = seasonId;
+    public List<Player> getPlayers() {
+        return players;
     }
 
     @Override
@@ -155,7 +50,7 @@ public class Roster {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(createdAt).append(updatedAt).append(lastGameStartedAt).append(playerId).append(teamId).append(seasonId).toHashCode();
+        return new HashCodeBuilder().append(seasons).append(players).append(playingPositions).toHashCode();
     }
 
     @Override
@@ -163,11 +58,11 @@ public class Roster {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Roster) == false) {
+        if (!(other instanceof Roster)) {
             return false;
         }
         Roster rhs = ((Roster) other);
-        return new EqualsBuilder().append(id, rhs.id).append(createdAt, rhs.createdAt).append(updatedAt, rhs.updatedAt).append(lastGameStartedAt, rhs.lastGameStartedAt).append(playerId, rhs.playerId).append(teamId, rhs.teamId).append(seasonId, rhs.seasonId).isEquals();
+        return new EqualsBuilder().append(seasons, rhs.seasons).append(players, rhs.players).append(playingPositions, rhs.playingPositions).isEquals();
     }
 
 }

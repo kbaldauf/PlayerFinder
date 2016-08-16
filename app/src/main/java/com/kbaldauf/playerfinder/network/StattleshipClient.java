@@ -19,7 +19,6 @@ public class StattleshipClient {
     @Inject
     public StattleshipClient(Context context, OkHttpClient client, RxJavaCallAdapterFactory rxAdapter) {
 
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(context.getString(R.string.stattleship_base_api))
                 .client(client)

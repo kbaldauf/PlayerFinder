@@ -43,7 +43,6 @@ public class NetworkModule {
         return RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
     }
 
-
     @Provides
     @Singleton
     static StattleshipClient provideStattleshipClient(Context context, OkHttpClient client, RxJavaCallAdapterFactory RxAdapter) {
