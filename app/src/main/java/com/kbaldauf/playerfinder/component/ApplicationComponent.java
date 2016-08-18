@@ -3,7 +3,6 @@ package com.kbaldauf.playerfinder.component;
 import android.content.Context;
 
 import com.kbaldauf.playerfinder.PlayerFinderApplication;
-import com.kbaldauf.playerfinder.activity.TeamActivity;
 import com.kbaldauf.playerfinder.module.ApplicationModule;
 
 import dagger.Component;

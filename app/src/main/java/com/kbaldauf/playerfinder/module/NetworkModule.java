@@ -5,8 +5,6 @@ import android.content.Context;
 import com.kbaldauf.playerfinder.network.StattleshipClient;
 import com.kbaldauf.playerfinder.network.StattleshipRequestInterceptor;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;
@@ -18,34 +16,29 @@ import rx.schedulers.Schedulers;
 public class NetworkModule {
 
     @Provides
-    @Singleton
-    static StattleshipRequestInterceptor provideStattleshipRequestInterceptor(Context context) {
+    StattleshipRequestInterceptor provideStattleshipRequestInterceptor(Context context) {
         return new StattleshipRequestInterceptor(context);
     }
 
     @Provides
-    @Singleton
-    static Interceptor provideInterceptor(StattleshipRequestInterceptor interceptor) {
+    Interceptor provideInterceptor(StattleshipRequestInterceptor interceptor) {
         return interceptor;
     }
 
     @Provides
-    @Singleton
-    static OkHttpClient provideStattleshipOkHttpClient(Interceptor interceptor) {
+    OkHttpClient provideStattleshipOkHttpClient(Interceptor interceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.interceptors().add(interceptor);
         return builder.build();
     }
 
     @Provides
-    @Singleton
-    static RxJavaCallAdapterFactory provideRxJavaCallAdapterFactory() {
+    RxJavaCallAdapterFactory provideRxJavaCallAdapterFactory() {
         return RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
     }
 
     @Provides
-    @Singleton
-    static StattleshipClient provideStattleshipClient(Context context, OkHttpClient client, RxJavaCallAdapterFactory RxAdapter) {
+    StattleshipClient provideStattleshipClient(Context context, OkHttpClient client, RxJavaCallAdapterFactory RxAdapter) {
         return new StattleshipClient(context, client, RxAdapter);
     }
 }

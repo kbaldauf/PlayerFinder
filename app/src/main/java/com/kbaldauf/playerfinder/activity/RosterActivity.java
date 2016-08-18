@@ -12,10 +12,8 @@ import android.widget.TextView;
 
 import com.kbaldauf.playerfinder.PlayerFinderApplication;
 import com.kbaldauf.playerfinder.R;
-import com.kbaldauf.playerfinder.model.DataManager;
+import com.kbaldauf.playerfinder.data.DataManager;
 import com.kbaldauf.playerfinder.model.Player;
-import com.kbaldauf.playerfinder.model.Roster;
-import com.kbaldauf.playerfinder.network.StattleshipClient;
 
 import java.util.List;
 
@@ -28,10 +26,10 @@ import butterknife.OnClick;
 import pocketknife.BindExtra;
 import pocketknife.PocketKnife;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class RosterActivity extends BaseActivity {
@@ -55,8 +53,6 @@ public class RosterActivity extends BaseActivity {
     @BindString(R.string.player_not_found)
     String playerNotFound;
 
-    @Inject
-    StattleshipClient client;
     @Inject
     DataManager dataManager;
 
@@ -102,7 +98,7 @@ public class RosterActivity extends BaseActivity {
     protected void bindDependencies() {
         ButterKnife.bind(this);
         PocketKnife.bindExtras(this);
-        PlayerFinderApplication.from(this).getNetworkComponent().inject(this);
+        PlayerFinderApplication.from(this).getDataComponent().inject(this);
     }
 
     @Override
@@ -113,44 +109,16 @@ public class RosterActivity extends BaseActivity {
     }
 
     private void loadData() {
-        if (dataManager.hasRoster(teamSlug)) {
-            Timber.d("Roster already exists in DataManager");
-            hideLoadingSpinner(dataManager.getRoster(teamSlug).getPlayers());
-        } else {
-            Observable<Roster> call = client.getHockeyApi().roster(teamSlug);
-            subscription = call
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .map(new Func1<Roster, Roster>() {
-                        @Override
-                        public Roster call(Roster roster) {
-                            dataManager.addRoster(teamSlug, roster);
-                            return roster;
-                        }
-                    })
-                    .map(new Func1<Roster, List<Player>>() {
-                        @Override
-                        public List<Player> call(Roster roster) {
-                            return roster.getPlayers();
-                        }
-                    })
-                    .subscribe(new Subscriber<List<Player>>() {
-                        @Override
-                        public void onCompleted() {
-                            Timber.d("onCompleted");
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e(e, "onError");
-                        }
-
-                        @Override
-                        public void onNext(List<Player> players) {
-                            Timber.d("onNext");
-                            hideLoadingSpinner(players);
-                        }
-                    });
-        }
+        Observable<List<Player>> data = dataManager.getPlayers(teamSlug);
+        subscription = data
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Player>>() {
+                    @Override
+                    public void call(List<Player> players) {
+                        hideLoadingSpinner(players);
+                    }
+                });
     }
 
     private void hideLoadingSpinner(List<Player> players) {
