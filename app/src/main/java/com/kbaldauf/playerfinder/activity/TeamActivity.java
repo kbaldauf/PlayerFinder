@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.kbaldauf.playerfinder.PlayerFinderApplication;
 import com.kbaldauf.playerfinder.R;
@@ -25,8 +26,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.Subscriber;
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -40,6 +41,8 @@ public class TeamActivity extends BaseActivity {
     Toolbar toolbar;
     @BindView(R.id.loading_spinner)
     ProgressBar loadingSpinner;
+    @BindView(R.id.error_message)
+    TextView errorMessage;
 
     @Inject
     DataManager dataManager;
@@ -72,6 +75,14 @@ public class TeamActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.team_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (errorMessage != null && errorMessage.getVisibility() == View.VISIBLE) {
+            menu.findItem(R.id.action_done).setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -110,25 +121,21 @@ public class TeamActivity extends BaseActivity {
     }
 
     private void loadData() {
-        Observable<List<Team>> data = dataManager.getTeams();
+        Single<List<Team>> data = dataManager.getTeams();
         subscription = data
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<Team>>() {
+                .subscribe(new SingleSubscriber<List<Team>>() {
                     @Override
-                    public void onCompleted() {
-                        Timber.d("onCompleted");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e, "onError");
-                    }
-
-                    @Override
-                    public void onNext(List<Team> teams) {
-                        Timber.d("onNext");
+                    public void onSuccess(List<Team> teams) {
+                        Timber.d("onSuccess with %d teams", teams.size());
                         hideSpinner(teams);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        Timber.e(error, "onError");
+                        showErrorMessage();
                     }
                 });
     }
@@ -136,6 +143,14 @@ public class TeamActivity extends BaseActivity {
     private void hideSpinner(List<Team> teams) {
         teamAdapter.setData(teams);
         loadingSpinner.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
         teamList.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorMessage() {
+        loadingSpinner.setVisibility(View.GONE);
+        teamList.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.VISIBLE);
+        invalidateOptionsMenu();
     }
 }

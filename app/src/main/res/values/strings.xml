@@ -3,4 +3,5 @@
     <string name="player_not_found">No player found with uniform number %s</string>
     <string name="submit">Submit</string>
     <string name="done">Done</string>
+    <string name="network_error">Unable to retrieve data. Please check your phone\'s network connection.</string>
 </resources>

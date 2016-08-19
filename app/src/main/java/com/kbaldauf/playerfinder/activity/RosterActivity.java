@@ -25,10 +25,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pocketknife.BindExtra;
 import pocketknife.PocketKnife;
-import rx.Observable;
+import rx.Single;
+import rx.SingleSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -49,6 +49,8 @@ public class RosterActivity extends BaseActivity {
     ProgressBar loadingSpinner;
     @BindView(R.id.roster_view_container)
     ViewGroup rosterViewContainer;
+    @BindView(R.id.error_message)
+    TextView errorMessage;
 
     @BindString(R.string.player_not_found)
     String playerNotFound;
@@ -109,14 +111,21 @@ public class RosterActivity extends BaseActivity {
     }
 
     private void loadData() {
-        Observable<List<Player>> data = dataManager.getPlayers(teamSlug);
+        Single<List<Player>> data = dataManager.getPlayers(teamSlug);
         subscription = data
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Player>>() {
+                .subscribe(new SingleSubscriber<List<Player>>() {
                     @Override
-                    public void call(List<Player> players) {
+                    public void onSuccess(List<Player> players) {
+                        Timber.e("onSuccess with roster of size %d", players.size());
                         hideLoadingSpinner(players);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        Timber.e(error, "onError");
+                        showErrorMessage();
                     }
                 });
     }
@@ -124,6 +133,13 @@ public class RosterActivity extends BaseActivity {
     private void hideLoadingSpinner(List<Player> players) {
         roster = players;
         loadingSpinner.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.GONE);
         rosterViewContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorMessage() {
+        loadingSpinner.setVisibility(View.GONE);
+        rosterViewContainer.setVisibility(View.GONE);
+        errorMessage.setVisibility(View.VISIBLE);
     }
 }

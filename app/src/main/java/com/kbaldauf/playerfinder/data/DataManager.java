@@ -13,7 +13,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import rx.Observable;
+import rx.Single;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -41,14 +41,14 @@ public class DataManager {
         return rosters.containsKey(slug);
     }
 
-    public Observable<List<Team>> getTeams() {
-        Observable<List<Team>> observable;
+    public Single<List<Team>> getTeams() {
+        Single<List<Team>> observable;
         if (hasSportsData()) {
-            observable = Observable.just(getSportsData().getTeams());
+            observable = Single.just(getSportsData().getTeams());
         } else {
-            Observable<Sport> networkObservable = client.getHockeyApi().teams();
+            Single<Sport> networkObservable = client.getHockeyApi().teams();
             observable = networkObservable
-                    .doOnNext(new Action1<Sport>() {
+                    .doOnSuccess(new Action1<Sport>() {
                         @Override
                         public void call(Sport s) {
                             // store network response
@@ -66,14 +66,14 @@ public class DataManager {
         return observable;
     }
 
-    public Observable<List<Player>> getPlayers(final String slug) {
-        Observable<List<Player>> observable;
+    public Single<List<Player>> getPlayers(final String slug) {
+        Single<List<Player>> observable;
         if (hasRoster(slug)) {
-            observable = Observable.just(rosters.get(slug).getPlayers());
+            observable = Single.just(rosters.get(slug).getPlayers());
         } else {
-            Observable<Roster> networkObservable = client.getHockeyApi().roster(slug);
+            Single<Roster> networkObservable = client.getHockeyApi().roster(slug);
             observable = networkObservable
-                    .doOnNext(new Action1<Roster>() {
+                    .doOnSuccess(new Action1<Roster>() {
                         @Override
                         public void call(Roster roster) {
                             rosters.put(slug, roster);

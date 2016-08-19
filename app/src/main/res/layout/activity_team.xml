@@ -14,6 +14,22 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/activity_team_container" />
 
+    <include
+        android:id="@+id/loading_spinner"
+        layout="@layout/loading_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintCenterX_toCenterX="@id/activity_team_container"
+        app:layout_constraintCenterY_toCenterY="@id/activity_team_container" />
+
+    <include
+        android:id="@+id/error_message"
+        layout="@layout/error_message"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintCenterX_toCenterX="@id/activity_team_container"
+        app:layout_constraintCenterY_toCenterY="@id/activity_team_container" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/team_list"
         android:layout_width="match_parent"
@@ -23,13 +39,5 @@
         app:layout_constraintLeft_toLeftOf="@id/activity_team_container"
         app:layout_constraintRight_toRightOf="@id/activity_team_container"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
-
-    <include
-        android:id="@+id/loading_spinner"
-        layout="@layout/loading_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintCenterX_toCenterX="@id/activity_team_container"
-        app:layout_constraintCenterY_toCenterY="@id/activity_team_container" />
 
 </android.support.constraint.ConstraintLayout>
