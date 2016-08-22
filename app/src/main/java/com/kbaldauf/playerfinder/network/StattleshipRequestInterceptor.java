@@ -2,6 +2,7 @@ package com.kbaldauf.playerfinder.network;
 
 import android.content.Context;
 
+import com.kbaldauf.playerfinder.BuildConfig;
 import com.kbaldauf.playerfinder.R;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class StattleshipRequestInterceptor implements Interceptor {
     @Inject
     public StattleshipRequestInterceptor(Context context) {
         headers = Headers.of(context.getString(R.string.stattleship_authorization_key),
-                String.format(context.getString(R.string.stattleship_token_key), context.getString(R.string.stattleship_api_token)),
+                String.format(context.getString(R.string.stattleship_token_key), BuildConfig.STATTLESHIP_API_TOKEN),
                 context.getString(R.string.stattleship_content_key), context.getString(R.string.stattleship_content_value),
                 context.getString(R.string.stattleship_accept_key), context.getString(R.string.stattleship_accept_value));
     }

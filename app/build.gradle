@@ -8,8 +8,10 @@ android {
         minSdkVersion 19
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0"
+        versionName "0.1." + computeBuildNumber()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "STATTLESHIP_API_TOKEN", "\""+getStattleshipApiToken()+"\""
     }
     buildTypes {
         release {
@@ -19,14 +21,36 @@ android {
     }
 }
 
+def getStattleshipApiToken() {
+    if (System.env.CI || System.env.CIRCLECI) { // Use environment variable if built on CI
+        return "$System.env.STATTLESHIP_API_TOKEN";
+    } else {
+        def Properties props = new Properties() // Use properties file if built locally
+        props.load(new FileInputStream(new File('keys.properties')))
+        return props.getProperty("stattleshipApiToken")
+    }
+}
+
+def computeBuildNumber() {
+    if (System.env.BUILD_NUMBER) {              // Check if there is a system build number.
+        return "$System.env.BUILD_NUMBER".toInteger()
+    } else if (System.env.CIRCLE_BUILD_NUM) {   // Check to see if this is built on Circle CI
+        return "$System.env.CIRCLE_BUILD_NUM".toInteger()
+    } else if (System.env.BUDDYBUILD_BUILD_NUMBER) {   // Check to see if this is built on BuddyBuild
+        return "$System.env.BUDDYBUILD_BUILD_NUMBER".toInteger()
+    } else {
+        return 0                                // if none is found, default to 1.
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha4'
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.android.support:recyclerview-v7:24.1.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha5'
+    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile 'com.android.support:recyclerview-v7:24.2.0'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.vikingsen:pocketknife-core:3.2.0'
     provided 'com.vikingsen:pocketknife-compiler:3.2.0'
@@ -45,6 +69,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'junit:junit:4.12'
+    debugCompile 'com.squareup.haha:haha:2.0.3' // explicitly added to resolve leakcanary error
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
