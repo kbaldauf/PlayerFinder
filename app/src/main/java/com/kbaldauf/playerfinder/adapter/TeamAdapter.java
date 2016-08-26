@@ -63,14 +63,19 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamViewHolder
     @Override
     public void onBindViewHolder(TeamViewHolder holder, int position) {
         Team team = teams.get(position);
-        holder.position = position;
+
+        // set team name
         holder.name.setText(ModelUtil.getBuiltTeamName(team));
-        if (team.getColors().size() > 1) {
+
+        // set team color square
+        if (team.getColors().size() > 1) { // for teams that offer more than one color, combine them as a gradient
             Drawable gradient = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, ModelUtil.getParsedColorList(team.getColors()));
             holder.logo.setBackground(gradient);
-        } else {
+        } else { // for teams with only one color, display them as a solid colored square
             holder.logo.setBackgroundColor(ModelUtil.getParsedColor(team.getColor()));
         }
+
+        // ensure that radio button is properly checked or unchecked
         if (selectedPosition != position) {
             holder.radioButton.setChecked(false);
         } else {
@@ -79,15 +84,13 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamViewHolder
         }
     }
 
-    class TeamViewHolder extends RecyclerView.ViewHolder {
+    protected class TeamViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.name) TextView name;
         @BindView(R.id.color_palette) ImageView logo;
         @BindView(R.id.radio_button) RadioButton radioButton;
 
-        int position;
-
-        public TeamViewHolder(View itemView) {
+        private TeamViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -98,11 +101,11 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamAdapter.TeamViewHolder
 
         @OnClick(R.id.team_view_container)
         void onClick(View v) {
-            if (selectedPosition != position && selectedButton != null) {
+            if (selectedPosition != getAdapterPosition() && selectedButton != null) {
                 selectedButton.setChecked(false);
             }
             radioButton.setChecked(true);
-            selectedPosition = position;
+            selectedPosition = getAdapterPosition();
             selectedButton = radioButton;
         }
     }

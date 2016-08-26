@@ -7,13 +7,21 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
 
 @Module
 public class DataModule {
 
     @Provides
     @Singleton
-    static DataManager provideDataManager(StattleshipClient client) {
-        return new DataManager(client);
+    Scheduler provideMainScheduler() {
+        return AndroidSchedulers.mainThread();
+    }
+
+    @Provides
+    @Singleton
+    static DataManager provideDataManager(StattleshipClient client, Scheduler mainScheduler) {
+        return new DataManager(client, mainScheduler);
     }
 }

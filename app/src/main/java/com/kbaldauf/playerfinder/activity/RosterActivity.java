@@ -2,7 +2,6 @@ package com.kbaldauf.playerfinder.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,10 +11,8 @@ import android.widget.TextView;
 
 import com.kbaldauf.playerfinder.PlayerFinderApplication;
 import com.kbaldauf.playerfinder.R;
-import com.kbaldauf.playerfinder.data.DataManager;
-import com.kbaldauf.playerfinder.model.Player;
-
-import java.util.List;
+import com.kbaldauf.playerfinder.presenter.RosterPresenter;
+import com.kbaldauf.playerfinder.view.RosterView;
 
 import javax.inject.Inject;
 
@@ -25,14 +22,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pocketknife.BindExtra;
 import pocketknife.PocketKnife;
-import rx.Single;
-import rx.SingleSubscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class RosterActivity extends BaseActivity {
+public class RosterActivity extends BaseActivity implements RosterView {
 
     @BindExtra
     String teamSlug;
@@ -56,39 +48,26 @@ public class RosterActivity extends BaseActivity {
     String playerNotFound;
 
     @Inject
-    DataManager dataManager;
-
-    private Subscription subscription;
-    private List<Player> roster;
+    RosterPresenter presenter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadData();
+        presenter.attachView(this);
+        presenter.loadRoster(teamSlug);
     }
 
     @Override
     protected void onDestroy() {
-        if (subscription != null && ! subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
+        presenter.detachView();
         super.onDestroy();
     }
 
     @OnClick(R.id.submit_button)
     void onClick() {
         Timber.d("Submit button clicked");
-        String number = uniformNumber.getText().toString();
-        if (! TextUtils.isEmpty(number)) {
-            for (Player player : roster) {
-                if (number.equals(player.getUniformNumber())) {
-                    playerName.setText(player.getName());
-                    return;
-                }
-            }
-        }
-        playerName.setText(String.format(playerNotFound, number));
+        presenter.findPlayer(uniformNumber.getText().toString());
     }
 
     @Override
@@ -100,7 +79,7 @@ public class RosterActivity extends BaseActivity {
     protected void bindDependencies() {
         ButterKnife.bind(this);
         PocketKnife.bindExtras(this);
-        PlayerFinderApplication.from(this).getDataComponent().inject(this);
+        PlayerFinderApplication.from(this).getPresenterComponent().inject(this);
     }
 
     @Override
@@ -110,36 +89,27 @@ public class RosterActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void loadData() {
-        Single<List<Player>> data = dataManager.getPlayers(teamSlug);
-        subscription = data
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleSubscriber<List<Player>>() {
-                    @Override
-                    public void onSuccess(List<Player> players) {
-                        Timber.e("onSuccess with roster of size %d", players.size());
-                        hideLoadingSpinner(players);
-                    }
-
-                    @Override
-                    public void onError(Throwable error) {
-                        Timber.e(error, "onError");
-                        showErrorMessage();
-                    }
-                });
-    }
-
-    private void hideLoadingSpinner(List<Player> players) {
-        roster = players;
+    @Override
+    public void hideLoadingSpinner() {
         loadingSpinner.setVisibility(View.GONE);
         errorMessage.setVisibility(View.GONE);
         rosterViewContainer.setVisibility(View.VISIBLE);
     }
 
-    private void showErrorMessage() {
+    @Override
+    public void showErrorMessage() {
         loadingSpinner.setVisibility(View.GONE);
         rosterViewContainer.setVisibility(View.GONE);
         errorMessage.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void playerFound(String name) {
+        playerName.setText(name);
+    }
+
+    @Override
+    public void playerNotFound(String number) {
+        playerFound(String.format(playerNotFound, number));
     }
 }

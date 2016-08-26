@@ -16,7 +16,9 @@ import com.kbaldauf.playerfinder.R;
 import com.kbaldauf.playerfinder.adapter.TeamAdapter;
 import com.kbaldauf.playerfinder.data.DataManager;
 import com.kbaldauf.playerfinder.model.Team;
+import com.kbaldauf.playerfinder.presenter.TeamPresenter;
 import com.kbaldauf.playerfinder.util.PocketKnifeActivityIntentUtil;
+import com.kbaldauf.playerfinder.view.TeamView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 
@@ -33,7 +35,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class TeamActivity extends BaseActivity {
+public class TeamActivity extends BaseActivity implements TeamView {
 
     @BindView(R.id.team_list)
     RecyclerView teamList;
@@ -45,7 +47,7 @@ public class TeamActivity extends BaseActivity {
     TextView errorMessage;
 
     @Inject
-    DataManager dataManager;
+    TeamPresenter presenter;
 
     private Subscription subscription;
     private TeamAdapter teamAdapter;
@@ -59,15 +61,13 @@ public class TeamActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadData();
+        presenter.attachView(this);
         Timber.d("onResume");
     }
 
     @Override
     protected void onPause() {
-        if (subscription != null && ! subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
+        presenter.detachView();
         super.onPause();
     }
 
@@ -105,7 +105,7 @@ public class TeamActivity extends BaseActivity {
     @Override
     protected void bindDependencies() {
         ButterKnife.bind(this);
-        PlayerFinderApplication.from(this).getDataComponent().inject(this);
+        PlayerFinderApplication.from(this).getPresenterComponent().inject(this);
     }
 
     @Override
@@ -120,34 +120,16 @@ public class TeamActivity extends BaseActivity {
         teamList.setAdapter(teamAdapter);
     }
 
-    private void loadData() {
-        Single<List<Team>> data = dataManager.getTeams();
-        subscription = data
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleSubscriber<List<Team>>() {
-                    @Override
-                    public void onSuccess(List<Team> teams) {
-                        Timber.d("onSuccess with %d teams", teams.size());
-                        hideSpinner(teams);
-                    }
-
-                    @Override
-                    public void onError(Throwable error) {
-                        Timber.e(error, "onError");
-                        showErrorMessage();
-                    }
-                });
-    }
-
-    private void hideSpinner(List<Team> teams) {
+    @Override
+    public void hideLoadingSpinner(List<Team> teams) {
         teamAdapter.setData(teams);
         loadingSpinner.setVisibility(View.GONE);
         errorMessage.setVisibility(View.GONE);
         teamList.setVisibility(View.VISIBLE);
     }
 
-    private void showErrorMessage() {
+    @Override
+    public void showErrorMessage() {
         loadingSpinner.setVisibility(View.GONE);
         teamList.setVisibility(View.GONE);
         errorMessage.setVisibility(View.VISIBLE);

@@ -13,20 +13,24 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Scheduler;
 import rx.Single;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class DataManager {
 
 
     private StattleshipClient client;
+    private Scheduler mainScheduler;
     private Sport sport;
     private Map<String, Roster> rosters = new HashMap<>();
 
     @Inject
-    public DataManager(StattleshipClient client) {
+    public DataManager(StattleshipClient client, Scheduler mainScheduler) {
         this.client = client;
+        this.mainScheduler = mainScheduler;
     }
 
     public boolean hasSportsData() {
@@ -63,7 +67,8 @@ public class DataManager {
                         }
                     });
         }
-        return observable;
+
+        return observable.compose(this.<List<Team>>applySchedulers());
     }
 
     public Single<List<Player>> getPlayers(final String slug) {
@@ -86,6 +91,17 @@ public class DataManager {
                         }
                     });
         }
-        return observable;
+        return observable.compose(this.<List<Player>>applySchedulers());
+    }
+
+    private <T>Single.Transformer<T,T> applySchedulers() {
+        return new Single.Transformer<T, T>() {
+            @Override
+            public Single<T> call(Single<T> single) {
+                return single
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(mainScheduler);
+            }
+        };
     }
 }

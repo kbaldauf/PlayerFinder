@@ -8,8 +8,10 @@ import com.kbaldauf.playerfinder.component.ApplicationComponent;
 import com.kbaldauf.playerfinder.component.DaggerApplicationComponent;
 import com.kbaldauf.playerfinder.component.DaggerDataComponent;
 import com.kbaldauf.playerfinder.component.DaggerNetworkComponent;
+import com.kbaldauf.playerfinder.component.DaggerPresenterComponent;
 import com.kbaldauf.playerfinder.component.DataComponent;
 import com.kbaldauf.playerfinder.component.NetworkComponent;
+import com.kbaldauf.playerfinder.component.PresenterComponent;
 import com.kbaldauf.playerfinder.module.ApplicationModule;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -21,6 +23,7 @@ public class PlayerFinderApplication extends Application {
     private ApplicationComponent applicationComponent;
     private NetworkComponent networkComponent;
     private DataComponent dataComponent;
+    private PresenterComponent presenterComponent;
     private RefWatcher refWatcher;
 
     @Override
@@ -33,6 +36,7 @@ public class PlayerFinderApplication extends Application {
         applicationComponent = DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
         networkComponent = DaggerNetworkComponent.builder().applicationComponent(applicationComponent).build();
         dataComponent = DaggerDataComponent.builder().networkComponent(networkComponent).build();
+        presenterComponent = DaggerPresenterComponent.builder().dataComponent(dataComponent).build();
     }
 
     /**
@@ -69,6 +73,15 @@ public class PlayerFinderApplication extends Application {
      */
     public DataComponent getDataComponent() {
         return dataComponent;
+    }
+
+    /**
+     * Provides a PresenterComponent that can be used to inject presenter dependencies.
+     *
+     * @return PresenterComponent instance.
+     */
+    public PresenterComponent getPresenterComponent() {
+        return presenterComponent;
     }
 
     /**
