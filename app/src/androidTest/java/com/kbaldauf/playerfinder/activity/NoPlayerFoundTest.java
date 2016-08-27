@@ -4,16 +4,9 @@ package com.kbaldauf.playerfinder.activity;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 
 import com.kbaldauf.playerfinder.R;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +22,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-@LargeTest
 @RunWith(AndroidJUnit4.class)
 public class NoPlayerFoundTest {
 
@@ -46,67 +38,36 @@ public class NoPlayerFoundTest {
         recyclerView.perform(actionOnItemAtPosition(22, click()));
 
         ViewInteraction actionMenuItemView = onView(
-                allOf(withId(R.id.action_done), withContentDescription("Done"), isDisplayed()));
+                allOf(withId(R.id.action_done), withContentDescription(R.string.done), isDisplayed()));
         actionMenuItemView.perform(click());
 
         ViewInteraction button = onView(
                 allOf(withId(R.id.submit_button),
-                        childAtPosition(
-                                allOf(withId(R.id.roster_view_container),
-                                        childAtPosition(
-                                                withId(R.id.activity_roster_container),
-                                                1)),
-                                2),
+                        withParent(allOf(withId(R.id.roster_view_container),
+                                withParent(withId(R.id.activity_roster_container)))),
                         isDisplayed()));
-        button.check(matches(isDisplayed()));
+        button.check(matches(withText(R.string.submit)));
 
         ViewInteraction textView = onView(
                 allOf(withId(R.id.player_name),
-                        childAtPosition(
-                                allOf(withId(R.id.roster_view_container),
-                                        childAtPosition(
-                                                withId(R.id.activity_roster_container),
-                                                1)),
-                                0),
+                        withParent(allOf(withId(R.id.roster_view_container),
+                                withParent(withId(R.id.activity_roster_container)))),
                         isDisplayed()));
         textView.check(matches(withText("")));
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.submit_button), withText("Submit"),
+                allOf(withId(R.id.submit_button), withText(R.string.submit),
                         withParent(allOf(withId(R.id.roster_view_container),
                                 withParent(withId(R.id.activity_roster_container)))),
                         isDisplayed()));
         appCompatButton.perform(click());
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.player_name), withText("No player found with uniform number "),
-                        childAtPosition(
-                                allOf(withId(R.id.roster_view_container),
-                                        childAtPosition(
-                                                withId(R.id.activity_roster_container),
-                                                1)),
-                                0),
+                allOf(withId(R.id.player_name),
+                        withParent(allOf(withId(R.id.roster_view_container),
+                                withParent(withId(R.id.activity_roster_container)))),
                         isDisplayed()));
         textView2.check(matches(withText("No player found with uniform number ")));
 
-    }
-
-    private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
-
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
     }
 }
