@@ -70,6 +70,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.0.111-beta'
     debugCompile 'com.squareup.haha:haha:2.0.3' // explicitly added to resolve leakcanary error
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

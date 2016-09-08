@@ -19,13 +19,6 @@ public class ModelUtil {
         return Color.parseColor(convertColorCodeToHex(color));
     }
 
-    public static List<String> convertColorCodeListToHex(List<String> colors) {
-        for (int i = 0; i < colors.size(); i++) {
-            colors.set(i, convertColorCodeToHex(colors.get(i)));
-        }
-        return colors;
-    }
-
     public static int[] getParsedColorList(List<String> colors) {
         int[] parsedColors = new int[colors.size()];
         for (int i = 0; i < colors.size(); i++) {
@@ -35,6 +28,6 @@ public class ModelUtil {
     }
 
     public static String getBuiltTeamName(Team team) {
-        return String.format("%s  %s", team.getName(), team.getNickname());
+        return String.format("%s %s", team.getName(), team.getNickname());
     }
 }
