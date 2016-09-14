@@ -8,13 +8,6 @@ import java.util.List;
 
 public class ModelUtil {
 
-    public static String convertColorCodeToHex(String color) {
-        if (! color.startsWith("#")) {
-            color = "#" + color;
-        }
-        return color;
-    }
-
     public static int getParsedColor(String color) {
         return Color.parseColor(convertColorCodeToHex(color));
     }
@@ -29,5 +22,12 @@ public class ModelUtil {
 
     public static String getBuiltTeamName(Team team) {
         return String.format("%s %s", team.getName(), team.getNickname());
+    }
+
+    private static String convertColorCodeToHex(String color) {
+        if (! color.startsWith("#")) {
+            color = "#" + color;
+        }
+        return color;
     }
 }
