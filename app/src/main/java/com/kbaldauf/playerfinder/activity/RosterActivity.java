@@ -1,6 +1,7 @@
 package com.kbaldauf.playerfinder.activity;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class RosterActivity extends BaseActivity implements RosterView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter.attachView(this);
+        presenter.generateViewTitle(teamSlug);
         presenter.loadRoster(teamSlug);
     }
 
@@ -85,8 +87,11 @@ public class RosterActivity extends BaseActivity implements RosterView {
     @Override
     protected void setupToolbar() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(teamSlug);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(teamSlug);
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -111,5 +116,13 @@ public class RosterActivity extends BaseActivity implements RosterView {
     @Override
     public void playerNotFound(String number) {
         playerFound(String.format(playerNotFound, number));
+    }
+
+    @Override
+    public void updateViewTitle(String title) {
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(title);
+        }
     }
 }

@@ -4,6 +4,8 @@ import android.text.TextUtils;
 
 import com.kbaldauf.playerfinder.data.DataManager;
 import com.kbaldauf.playerfinder.model.Player;
+import com.kbaldauf.playerfinder.model.Team;
+import com.kbaldauf.playerfinder.util.ModelUtil;
 import com.kbaldauf.playerfinder.view.RosterView;
 
 import java.util.List;
@@ -84,6 +86,18 @@ public class RosterPresenter extends BasePresenter<RosterView> {
                         }
                     }
                 });
+    }
+
+    /**
+     * Generates the team name that will be used for the view's title
+     *
+     * @param teamSlug the string slug for the desired team
+     */
+    public void generateViewTitle(String teamSlug) {
+        Team team = manager.getTeam(teamSlug);
+        if (team != null && isViewAttached()) {
+            getView().updateViewTitle(ModelUtil.getBuiltTeamName(team));
+        }
     }
 
     /**

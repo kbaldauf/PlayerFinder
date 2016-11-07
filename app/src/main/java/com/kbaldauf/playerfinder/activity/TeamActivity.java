@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.kbaldauf.playerfinder.PlayerFinderApplication;
 import com.kbaldauf.playerfinder.R;
 import com.kbaldauf.playerfinder.adapter.TeamAdapter;
-import com.kbaldauf.playerfinder.data.DataManager;
 import com.kbaldauf.playerfinder.model.Team;
 import com.kbaldauf.playerfinder.presenter.TeamPresenter;
 import com.kbaldauf.playerfinder.util.PocketKnifeActivityIntentUtil;
@@ -28,11 +27,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Single;
-import rx.SingleSubscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class TeamActivity extends BaseActivity implements TeamView {

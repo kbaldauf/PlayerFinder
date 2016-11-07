@@ -20,4 +20,8 @@ public interface RosterView extends PlayerFinderView {
      * Informs the view that no player has been found for the given uniform number
      */
     void playerNotFound(String number);
+    /**
+     * Informs the view that the actionbar's title should be updated to the given title
+     */
+    void updateViewTitle(String title);
 }

@@ -26,6 +26,7 @@ public class DataManager {
     private Scheduler mainScheduler;
     private Sport sport;
     private Map<String, Roster> rosters = new HashMap<>();
+    private Map<String, Team> teams = new HashMap<>();
 
     @Inject
     public DataManager(StattleshipClient client, Scheduler mainScheduler) {
@@ -33,22 +34,10 @@ public class DataManager {
         this.mainScheduler = mainScheduler;
     }
 
-    public boolean hasSportsData() {
-        return sport != null;
-    }
-
-    public Sport getSportsData() {
-        return sport;
-    }
-
-    public boolean hasRoster(String slug) {
-        return rosters.containsKey(slug);
-    }
-
     public Single<List<Team>> getTeams() {
         Single<List<Team>> observable;
         if (hasSportsData()) {
-            observable = Single.just(getSportsData().getTeams());
+            observable = Single.just(sport.getTeams());
         } else {
             Single<Sport> networkObservable = client.getHockeyApi().teams();
             observable = networkObservable
@@ -64,6 +53,15 @@ public class DataManager {
                         public List<Team> call(Sport sport) {
                             // convert network response to list of teams
                             return sport.getTeams();
+                        }
+                    })
+                    .doOnSuccess(new Action1<List<Team>>() {
+                        @Override
+                        public void call(List<Team> teamList) {
+                            // store team in map with slug key
+                            for (Team team : teamList) {
+                                teams.put(team.getSlug(), team);
+                            }
                         }
                     });
         }
@@ -81,17 +79,23 @@ public class DataManager {
                     .doOnSuccess(new Action1<Roster>() {
                         @Override
                         public void call(Roster roster) {
+                            // store roster in map with slug key
                             rosters.put(slug, roster);
                         }
                     })
                     .map(new Func1<Roster, List<Player>>() {
                         @Override
                         public List<Player> call(Roster roster) {
+                            // convert network response to list of players
                             return roster.getPlayers();
                         }
                     });
         }
         return observable.compose(this.<List<Player>>applySchedulers());
+    }
+
+    public Team getTeam(String slug) {
+        return teams.get(slug);
     }
 
     private <T>Single.Transformer<T,T> applySchedulers() {
@@ -103,5 +107,13 @@ public class DataManager {
                         .observeOn(mainScheduler);
             }
         };
+    }
+
+    private boolean hasSportsData() {
+        return sport != null;
+    }
+
+    private boolean hasRoster(String slug) {
+        return rosters.containsKey(slug);
     }
 }
